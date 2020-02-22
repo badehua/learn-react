@@ -464,3 +464,33 @@
   import React, { lazy } from 'react';
   const MyComponent = lazy(() => import("./MyComponent.js"));
   ```
+### Context
++ 共享那些对于一个组件树而言是“全局”的数据，无需为每层组件手动添加 props
++ Context 主要应用场景在于很多不同层级的组件需要访问同样一些的数据。请谨慎使用，因为这会使得组件的<b><u>复用性变差</u></b>
++ api</br>
+  `React.createContext`
+  ```
+  const MyContext = React.createContext(defaultValue);
+  ```
+  `Context.Provider`
+  ```
+  <MyContext.Provider value={/* 某个值 */}>
+  ```
+  `Class.contextType` 或 使用 static 这个类属性来初始化你的 contextType
+  ```
+  MyClass.contextType = MyContext;
+  ```
+  `Context.Consumer` 这能让你在函数式组件中完成订阅 context
+  ```
+  <MyContext.Consumer>
+    {value => /* 基于 context 值进行渲染*/}
+  </MyContext.Consumer>
+  ```
+  `Context.displayName` React DevTools 使用该字符串来确定 context 要显示的内容。
+  ```
+  const MyContext = React.createContext(/* some value */);
+  MyContext.displayName = 'MyDisplayName';
+
+  <MyContext.Provider> // "MyDisplayName.Provider" 在 DevTools 中
+  <MyContext.Consumer> // "MyDisplayName.Consumer" 在 DevTools 中
+  ```
