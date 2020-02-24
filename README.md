@@ -494,3 +494,57 @@
   <MyContext.Provider> // "MyDisplayName.Provider" 在 DevTools 中
   <MyContext.Consumer> // "MyDisplayName.Consumer" 在 DevTools 中
   ```
+### 错误边界
++ 可以捕获并打印发生在其子组件树任何位置的 JavaScript 错误，并且，它会渲染出备用 UI
++ 使用 static getDerivedStateFromError() 渲染备用 UI ，使用 componentDidCatch() 打印错误信息
+  ```
+  class ErrorBoundary extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = { hasError: false };
+    }
+
+    static getDerivedStateFromError(error) {
+      // 更新 state 使下一次渲染能够显示降级后的 UI
+      return { hasError: true };
+    }
+
+    componentDidCatch(error, errorInfo) {
+      // 你同样可以将错误日志上报给服务器
+      logErrorToMyService(error, errorInfo);
+    }
+
+    render() {
+      if (this.state.hasError) {
+        // 你可以自定义降级后的 UI 并渲染
+        return <h1>Something went wrong.</h1>;
+      }
+
+      return this.props.children; 
+    }
+  }
+  // 然后你可以将它作为一个常规组件去使用：
+
+  <ErrorBoundary>
+    <MyWidget />
+  </ErrorBoundary>
+  ```
++ 只有 class 组件才可以成为错误边界组件
++ 注意：错误边界仅可以捕获其子组件的错误，它无法捕获其自身的错误
+
+### Refs转发
++ Ref 转发是一项将 ref 自动地通过组件传递到其一子组件的技巧
+  ```
+  const FancyButton = React.forwardRef((props, ref) => (
+    <button ref={ref} className="FancyButton">
+      {props.children}
+    </button>
+  ));
+
+  // 你可以直接获取 DOM button 的 ref：
+  const ref = React.createRef();
+  <FancyButton ref={ref}>Click me!</FancyButton>;
+  ```
++ 注意
+  第二个参数 ref 只在使用 React.forwardRef 定义组件时存在。常规函数和 class 组件不接收 ref 参数，且 props 中也不存在 ref</br>
+  Ref 转发不仅限于 DOM 组件，你也可以转发 refs 到 class 组件实例中</br>
