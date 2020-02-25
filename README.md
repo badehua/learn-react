@@ -545,6 +545,114 @@
   const ref = React.createRef();
   <FancyButton ref={ref}>Click me!</FancyButton>;
   ```
-+ 注意
++ 注意</br>
   第二个参数 ref 只在使用 React.forwardRef 定义组件时存在。常规函数和 class 组件不接收 ref 参数，且 props 中也不存在 ref</br>
   Ref 转发不仅限于 DOM 组件，你也可以转发 refs 到 class 组件实例中</br>
++ 高阶组件中转发Refs
+  ```
+  // “logProps” HOC 透传（pass through）所有 props 到其包裹的组件
+  function logProps(WrappedComponent) {
+    class LogProps extends React.Component {
+      componentDidUpdate(prevProps) {
+        console.log('old props:', prevProps);
+        console.log('new props:', this.props);
+      }
+
+      render() {
+        return <WrappedComponent {...this.props} />;
+      }
+    }
+
+    return LogProps;
+  }
+  ```
+  使用该 HOC 记录所有传递到 “fancy button” 组件的 props
+  ```
+  class FancyButton extends React.Component {
+    focus() {
+      // ...
+    }
+
+    // ...
+  }
+
+  // 我们导出 LogProps，而不是 FancyButton。
+  // 虽然它也会渲染一个 FancyButton。
+  export default logProps(FancyButton);
+  ```
+  refs 将不会透传下去,FancyButton 组件的 refs 实际上将被挂载到 LogProps 组件
+  ```
+  import FancyButton from './FancyButton';
+
+  const ref = React.createRef();
+
+  // 我们导入的 FancyButton 组件是高阶组件（HOC）LogProps。
+  // 尽管渲染结果将是一样的，
+  // 但我们的 ref 将指向 LogProps 而不是内部的 FancyButton 组件！
+  // 这意味着我们不能调用例如 ref.current.focus() 这样的方法
+  <FancyButton
+    label="Click Me"
+    handleClick={handleClick}
+    ref={ref}
+  />;
+  ```
+  解决方法： React.forwardRef API 
+  ```
+  function logProps(Component) {
+    class LogProps extends React.Component {
+      componentDidUpdate(prevProps) {
+        console.log('old props:', prevProps);
+        console.log('new props:', this.props);
+      }
+
+      render() {
+        const {forwardedRef, ...rest} = this.props;
+
+        // 将自定义的 prop 属性 “forwardedRef” 定义为 ref
+        return <Component ref={forwardedRef} {...rest} />;
+      }
+    }
+
+    // 注意 React.forwardRef 回调的第二个参数 “ref”。
+    // 我们可以将其作为常规 prop 属性传递给 LogProps，例如 “forwardedRef”
+    // 然后它就可以被挂载到被 LogProps 包裹的子组件上。
+    return React.forwardRef((props, ref) => {
+      return <LogProps {...props} forwardedRef={ref} />;
+    });
+  }
+  ```
++ DevTools 中显示自定义名称</br>
+  React.forwardRef 接受一个渲染函数。React DevTools 使用该函数来决定为 ref 转发组件显示的内容
+  ```
+  // 以下组件将在 DevTools 中显示为 “ForwardRef”
+  const WrappedComponent = React.forwardRef((props, ref) => {
+    return <LogProps {...props} forwardedRef={ref} />;
+  });
+  ```
+  ```
+  // 如果命名了渲染函数，DevTools 也将包含其名称（例如 “ForwardRef(myFunction)”）：
+  const WrappedComponent = React.forwardRef(
+    function myFunction(props, ref) {
+      return <LogProps {...props} forwardedRef={ref} />;
+    }
+  );
+  ```
+  ```
+  // 可以设置函数的 displayName 属性来包含被包裹组件的名称
+  function logProps(Component) {
+    class LogProps extends React.Component {
+      // ...
+    }
+
+    function forwardRef(props, ref) {
+      return <LogProps {...props} forwardedRef={ref} />;
+    }
+
+    // 在 DevTools 中为该组件提供一个更有用的显示名。
+    // 例如 “ForwardRef(logProps(MyComponent))”
+    const name = Component.displayName || Component.name;
+    forwardRef.displayName = `logProps(${name})`;
+
+    return React.forwardRef(forwardRef);
+  }
+  ```
