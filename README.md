@@ -375,7 +375,8 @@
 + JSX 支持所有 aria-* HTML 属性</br>
 + 语义化</br>
   使用 Fragment ,允许将子列表分组，而无需向 DOM 添加额外节点</br>
-  不需要在 fragment 标签中添加任何 prop 且你的工具支持的时候,可使用短语法
+  不需要在 fragment 标签中添加任何 prop 且你的工具支持的时候,可使用短语法</br>
+  key 是唯一可以传递给 Fragment 的属性
   ```
   function ListItem({ item }) {
     return (
@@ -655,4 +656,68 @@
 
     return React.forwardRef(forwardRef);
   }
+  ```
+### 高阶组件（HOC）
++ 高阶组件是参数为组件，返回值为新组件的函数,是 React 中用于复用组件逻辑的一种高级技巧
++ HOC 不应该修改传入组件，而应该使用组合的方式，通过将组件包装在容器组件中实现功能
++ HOC 和容器组件</br>
+  容器组件担任分离将高层和低层关注的责任，由容器管理订阅和状态，并将 prop 传递给处理渲染 UI。HOC 使用容器作为其实现的一部分，你可以将 HOC 视为参数化容器组件
++ 约定：将不相关的 props 传递给被包裹的组件</br>
+  HOC 为组件添加特性。自身不应该大幅改变约定，应该透传与自身无关的 props</br>
+  大多数 HOC 都应该包含一个类似于下面的 render 方法
+  ```
+  render() {
+    // 过滤掉非此 HOC 额外的 props，且不要进行透传
+    const { extraProp, ...passThroughProps } = this.props;
+
+    // 将 props 注入到被包装的组件中。
+    // 通常为 state 的值或者实例方法。
+    const injectedProp = someStateOrInstanceMethod;
+
+    // 将 props 传递给被包装组件
+    return (
+      <WrappedComponent
+        injectedProp={injectedProp}
+        {...passThroughProps}
+      />
+    );
+  }
+  ```
++ 约定：最大化可组合性
++ 约定：包装显示名称以便轻松调试</br>
+  最常见的方式是用 HOC 包住被包装组件的显示名称</br>
+  ```
+  function withSubscription(WrappedComponent) {
+    class WithSubscription extends React.Component {/* ... */}
+    WithSubscription.displayName = `WithSubscription(${getDisplayName(WrappedComponent)})`;
+    return WithSubscription;
+  }
+
+  function getDisplayName(WrappedComponent) {
+    return WrappedComponent.displayName || WrappedComponent.name || 'Component';
+  }
+  ```
++ 注意</br>
+  不要在 render 方法中使用 HOC</br>
+  务必复制静态方法</br>
+  用 hoist-non-react-statics 自动拷贝所有非 React 静态方法
+  ```
+  import hoistNonReactStatic from 'hoist-non-react-statics';
+  function enhance(WrappedComponent) {
+    class Enhance extends React.Component {/*...*/}
+    hoistNonReactStatic(Enhance, WrappedComponent);
+    return Enhance;
+  }
+  ```
+  另一个可行的方案是再额外导出这个静态方法
+  ```
+  // 使用这种方式代替...
+  MyComponent.someFunction = someFunction;
+  export default MyComponent;
+
+  // ...单独导出该方法...
+  export { someFunction };
+
+  // ...并在要使用的组件中，import 它们
+  import MyComponent, { someFunction } from './MyComponent.js';
   ```
