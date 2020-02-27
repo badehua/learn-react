@@ -721,3 +721,39 @@
   // ...并在要使用的组件中，import 它们
   import MyComponent, { someFunction } from './MyComponent.js';
   ```
+
+### Portals
+  子节点渲染到存在于父组件以外的 DOM 节点的优秀的方案
+  ```
+  ReactDOM.createPortal(child, container)
+  ```
+
+### Profiler
++ 测量渲染一个 React 应用多久渲染一次以及渲染一次的“代价”的API
++ Profiling 增加了额外的开支，在生产构建不使用，如需加在生产中，React 提供了使 profiling 可用的特殊的生产构建环境
++ 使用
+  ```
+  render(
+    <App>
+      <Profiler id="Navigation" onRender={callback}>
+        <Navigation {...props} />
+      </Profiler>
+      <Main {...props} />
+    </App>
+  );
+  ```
+  需要两个prop： id  callback</br>
+  此示例分析Navigation组件及其子代</br>
+  多个 Profiler 组件能测量应用中的不同部分，也可嵌套使用测量同一子树下不同组件</br>
++ onRender函数
+  function onRenderCallback(
+    id, // 发生提交的 Profiler 树的 “id”
+    phase, // "mount" （如果组件树刚加载） 或者 "update" （如果它重渲染了）之一
+    actualDuration, // 本次更新 committed 花费的渲染时间
+    baseDuration, // 估计不使用 memoization 的情况下渲染整颗子树需要的时间
+    startTime, // 本次更新中 React 开始渲染的时间
+    commitTime, // 本次更新中 React committed 的时间
+    interactions // 属于本次更新的 interactions 的集合
+  ) {
+    // 合计或记录渲染时间。。。
+  }
