@@ -1,8 +1,10 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Comment from './component/comment'
-import ContextTest from './component/contextTest'
+// import Comment from './component/comment'
+// import ContextTest from './component/contextTest'
+import AntdDemo from './component/antdDemo'
+
 function App() {
   return (
     <div className="App">
@@ -21,7 +23,8 @@ function App() {
         </a> */}
         {/* <h1>Hello world!</h1>
         <Comment author={{name:'王琦',avatarUrl:logo}} text="这是一个评论" date={new Date()}/> */}
-        <ContextTest />
+        {/* <ContextTest /> */}
+        <AntdDemo></AntdDemo>
       </header>
     </div>
   );
