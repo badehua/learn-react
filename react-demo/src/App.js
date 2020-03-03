@@ -1,9 +1,10 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-// import Comment from './component/comment'
-// import ContextTest from './component/contextTest'
-import AntdDemo from './component/antdDemo'
+// import Comment from './component/Comment'
+// import ContextTest from './component/ContextTest'
+// import AntdDemo from './component/AntdDemo'
+import HookCom from './component/HookCom'
 
 function App() {
   return (
@@ -22,9 +23,14 @@ function App() {
           Learn React
         </a> */}
         {/* <h1>Hello world!</h1>
+
         <Comment author={{name:'王琦',avatarUrl:logo}} text="这是一个评论" date={new Date()}/> */}
+
         {/* <ContextTest /> */}
-        <AntdDemo></AntdDemo>
+
+        {/* <AntdDemo></AntdDemo> */}
+
+        <HookCom></HookCom>
       </header>
     </div>
   );
