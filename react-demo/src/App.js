@@ -4,7 +4,8 @@ import './App.css';
 // import Comment from './component/Comment'
 // import ContextTest from './component/ContextTest'
 // import AntdDemo from './component/AntdDemo'
-import HookCom from './component/HookCom'
+// import HookCom from './component/HookCom'
+import ContextUse from './component/ContextUse'
 
 function App() {
   return (
@@ -30,7 +31,9 @@ function App() {
 
         {/* <AntdDemo></AntdDemo> */}
 
-        <HookCom></HookCom>
+        {/* <HookCom></HookCom> */}
+
+        <ContextUse></ContextUse>
       </header>
     </div>
   );
