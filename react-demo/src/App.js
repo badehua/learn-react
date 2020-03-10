@@ -5,7 +5,10 @@ import './App.css';
 // import ContextTest from './component/ContextTest'
 // import AntdDemo from './component/AntdDemo'
 // import HookCom from './component/HookCom'
-import ContextUse from './component/ContextUse'
+// import ContextUse from './component/ContextUse'
+import ReduxTest from './component/ReduxTest'
+import { Provider } from 'react-redux'
+import store from './store'
 
 function App() {
   return (
@@ -33,7 +36,11 @@ function App() {
 
         {/* <HookCom></HookCom> */}
 
-        <ContextUse></ContextUse>
+        {/* <ContextUse></ContextUse> */}
+        
+        <Provider store={store}>
+          <ReduxTest></ReduxTest>
+        </Provider>
       </header>
     </div>
   );

@@ -11,7 +11,8 @@
 // You can use customize-cra plugins in replacement
 const {
   override,
-  fixBabelImports
+  fixBabelImports,
+  addDecoratorsLegacy
 } = require("customize-cra");
 
 module.exports = {
@@ -20,6 +21,7 @@ module.exports = {
       libraryName: 'antd',
       libraryDirectory: 'es',
       style: 'css'
-    })
+    }),
+    addDecoratorsLegacy() // 使用装饰器时报错，添加此代码并启用experimentalDecorators配置
   )
 };
