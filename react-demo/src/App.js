@@ -6,9 +6,12 @@ import './App.css';
 // import AntdDemo from './component/AntdDemo'
 // import HookCom from './component/HookCom'
 // import ContextUse from './component/ContextUse'
-import ReduxTest from './component/ReduxTest'
-import { Provider } from 'react-redux'
-import store from './store'
+
+// import ReduxTest from './component/ReduxTest'
+// import { Provider } from 'react-redux'
+// import store from './store'
+
+import RouteSample from './component/RouteSample'
 
 function App() {
   return (
@@ -38,9 +41,11 @@ function App() {
 
         {/* <ContextUse></ContextUse> */}
         
-        <Provider store={store}>
+        {/* <Provider store={store}>
           <ReduxTest></ReduxTest>
-        </Provider>
+        </Provider> */}
+
+        <RouteSample />
       </header>
     </div>
   );
