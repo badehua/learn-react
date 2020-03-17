@@ -8,8 +8,8 @@ import './App.css';
 // import ContextUse from './component/ContextUse'
 
 // import ReduxTest from './component/ReduxTest'
-// import { Provider } from 'react-redux'
-// import store from './store'
+import { Provider } from 'react-redux'
+import store from './store'
 
 import RouteSample from './component/RouteSample'
 
@@ -45,7 +45,9 @@ function App() {
           <ReduxTest></ReduxTest>
         </Provider> */}
 
-        <RouteSample />
+        <Provider store= {store}>
+          <RouteSample/>
+        </Provider>
       </header>
     </div>
   );
